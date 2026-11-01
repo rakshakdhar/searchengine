@@ -33,6 +33,11 @@ export default function HomePage() {
   // Pop-up Quiz Modal State for mobile / instant overlay
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
 
+  // Other Option Typing State
+  const [otherTexts, setOtherTexts] = useState({});
+  const [otherActiveQuestions, setOtherActiveQuestions] = useState({});
+  const otherInputRef = useRef(null);
+
   useEffect(() => {
     // Ensure viewport defaults strictly to the top on page load/refresh
     if (typeof window !== 'undefined') {
@@ -112,10 +117,40 @@ export default function HomePage() {
     }
   };
 
-  // MCQ Option Select (Questions 1 to 7)
-  const handleSelectOption = (questionId, value) => {
+  // MCQ Option Select (Questions 1 to 8)
+  const handleSelectOption = (questionId, value, isOther = false) => {
     playSound('pop');
+
+    if (isOther) {
+      setOtherActiveQuestions(prev => ({ ...prev, [questionId]: true }));
+      setTimeout(() => {
+        if (otherInputRef.current) {
+          otherInputRef.current.focus();
+        }
+      }, 60);
+      return;
+    }
+
+    // Deselect Other if standard option chosen
+    setOtherActiveQuestions(prev => ({ ...prev, [questionId]: false }));
     const updatedAnswers = { ...answers, [questionId]: value };
+    setAnswers(updatedAnswers);
+
+    setTimeout(() => {
+      setCurrentStep(prev => prev + 1);
+    }, 180);
+  };
+
+  const handleOtherSubmit = (questionId) => {
+    const currentAnswer = answers[questionId] || '';
+    const storedText = otherTexts[questionId] !== undefined
+      ? otherTexts[questionId]
+      : (currentAnswer.startsWith('Other: ') ? currentAnswer.replace(/^Other:\s*/, '') : '');
+    const trimmed = (storedText || '').trim();
+    if (!trimmed) return;
+
+    playSound('pop');
+    const updatedAnswers = { ...answers, [questionId]: `Other: ${trimmed}` };
     setAnswers(updatedAnswers);
 
     setTimeout(() => {
@@ -162,6 +197,8 @@ export default function HomePage() {
   const handleRetake = () => {
     setAnswers({});
     setFormData({ name: '', email: '', phone: '' });
+    setOtherTexts({});
+    setOtherActiveQuestions({});
     setCurrentStep(0);
     setComputedArchetype(null);
   };
@@ -212,32 +249,79 @@ export default function HomePage() {
 
       {/* Steps Viewport */}
       <div className="steps-viewport">
-        {/* STEPS 0 to 6: Clean MCQ Questions (Questions 1 to 7) */}
-        {currentStep >= 0 && currentStep < QUIZ_QUESTIONS.length && (
-          <div key={QUIZ_QUESTIONS[currentStep].id}>
-            <h2 className="step-question">{QUIZ_QUESTIONS[currentStep].question}</h2>
+        {/* STEPS 0 to 7: Clean MCQ Questions (Questions 1 to 8) */}
+        {currentStep >= 0 && currentStep < QUIZ_QUESTIONS.length && (() => {
+          const currentQ = QUIZ_QUESTIONS[currentStep];
+          const currentAnswer = answers[currentQ.id] || '';
+          const isOtherCurrentlyActive = !!otherActiveQuestions[currentQ.id] || currentAnswer.startsWith('Other');
+          const currentOtherVal = otherTexts[currentQ.id] !== undefined
+            ? otherTexts[currentQ.id]
+            : (currentAnswer.startsWith('Other: ') ? currentAnswer.replace(/^Other:\s*/, '') : '');
 
-            <div className="options-container">
-              {QUIZ_QUESTIONS[currentStep].options.map((opt, idx) => {
-                const isSelected = answers[QUIZ_QUESTIONS[currentStep].id] === opt.val;
-                return (
-                  <button
-                    key={`${QUIZ_QUESTIONS[currentStep].id}_${opt.val}`}
-                    type="button"
-                    className={`option-pill ${isSelected ? 'selected' : ''}`}
-                    onClick={(e) => {
-                      e.currentTarget.blur();
-                      handleSelectOption(QUIZ_QUESTIONS[currentStep].id, opt.val);
-                    }}
-                  >
-                    <span className="opt-num">{idx + 1}</span>
-                    <span>{opt.label}</span>
-                  </button>
-                );
-              })}
+          return (
+            <div key={currentQ.id}>
+              <h2 className="step-question">{currentQ.question}</h2>
+
+              <div className="options-container">
+                {currentQ.options.map((opt, idx) => {
+                  const isSelected = opt.isOther
+                    ? isOtherCurrentlyActive
+                    : (!isOtherCurrentlyActive && currentAnswer === opt.val);
+
+                  return (
+                    <button
+                      key={`${currentQ.id}_${opt.val}`}
+                      type="button"
+                      className={`option-pill ${isSelected ? 'selected' : ''}`}
+                      onClick={(e) => {
+                        e.currentTarget.blur();
+                        handleSelectOption(currentQ.id, opt.val, !!opt.isOther);
+                      }}
+                    >
+                      <span className="opt-num">{idx + 1}</span>
+                      <span>{opt.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Expandable Other Text Input */}
+              {isOtherCurrentlyActive && (
+                <div className="other-input-container">
+                  <div className="other-input-inner">
+                    <input
+                      ref={otherInputRef}
+                      type="text"
+                      className="other-text-input"
+                      placeholder="Type your answer here..."
+                      value={currentOtherVal}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setOtherTexts(prev => ({ ...prev, [currentQ.id]: val }));
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleOtherSubmit(currentQ.id);
+                        }
+                      }}
+                      autoFocus
+                    />
+                    <button
+                      type="button"
+                      className="other-submit-btn"
+                      onClick={() => handleOtherSubmit(currentQ.id)}
+                      disabled={!currentOtherVal.trim()}
+                    >
+                      <span>Next</span>
+                      <ArrowRight size={14} />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Final Step: Contact Details (Question 8: Secure Your Founding Spot) */}
         {currentStep === QUIZ_QUESTIONS.length && (

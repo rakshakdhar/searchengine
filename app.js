@@ -396,21 +396,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Option Click -> Auto Advance to Next Question!
+  // Option Click -> Auto Advance or Open "Other" Typing Field
   const optionPills = document.querySelectorAll('.option-pill');
   optionPills.forEach(pill => {
     pill.addEventListener('click', function () {
+      const stepElem = this.closest('.quiz-step');
       const parentContainer = this.closest('.options-container');
       const questionKey = parentContainer.getAttribute('data-question');
       const val = this.getAttribute('data-val');
+      const isOther = val === 'Other' || this.getAttribute('data-is-other') === 'true';
+      const otherContainer = stepElem ? stepElem.querySelector('.other-input-container') : null;
 
       // Highlight selected pill
       parentContainer.querySelectorAll('.option-pill').forEach(p => p.classList.remove('selected'));
       this.classList.add('selected');
 
+      sfx.playPop();
+
+      if (isOther) {
+        if (otherContainer) {
+          otherContainer.style.display = 'block';
+          const input = otherContainer.querySelector('.other-text-input');
+          if (input) {
+            setTimeout(() => input.focus(), 60);
+          }
+        }
+        return; // Do not auto-advance; let user type their answer!
+      }
+
+      // If choosing a standard option, hide other container if present
+      if (otherContainer) {
+        otherContainer.style.display = 'none';
+      }
+
       // Save answer
       quizState.answers[questionKey] = val;
-      sfx.playPop();
 
       // AUTOMATIC ADVANCE: Pop next question after 240ms
       setTimeout(() => {
@@ -423,6 +443,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Handle "Other" typing submission (button click or Enter key)
+  document.querySelectorAll('.quiz-step').forEach(stepElem => {
+    const otherContainer = stepElem.querySelector('.other-input-container');
+    if (!otherContainer) return;
+
+    const input = otherContainer.querySelector('.other-text-input');
+    const submitBtn = otherContainer.querySelector('.other-submit-btn');
+    const parentContainer = stepElem.querySelector('.options-container');
+    if (!parentContainer) return;
+    const questionKey = parentContainer.getAttribute('data-question');
+
+    const handleOtherSubmit = () => {
+      const val = (input.value || '').trim();
+      if (!val) {
+        input.focus();
+        input.classList.add('shake');
+        setTimeout(() => input.classList.remove('shake'), 400);
+        return;
+      }
+
+      quizState.answers[questionKey] = `Other: ${val}`;
+      sfx.playPop();
+
+      if (quizState.currentStep < 7) {
+        goToStep(quizState.currentStep + 1);
+      } else if (quizState.currentStep === 7) {
+        goToStep(8);
+      }
+    };
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', handleOtherSubmit);
+    }
+
+    if (input) {
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          handleOtherSubmit();
+        }
+      });
+    }
+  });
+
   // Back Button
   if (backBtn) {
     backBtn.addEventListener('click', () => {
@@ -433,15 +497,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Keyboard navigation (1-6 keys & Backspace)
+  // Keyboard navigation (1-7 keys & Backspace, unless typing in an input)
   window.addEventListener('keydown', (e) => {
+    // If user is typing in any input field or textarea, do not intercept numbers or backspace
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+      return;
+    }
+
     const activeStep = document.querySelector('.quiz-step.active');
     if (!activeStep) return;
     const stepIdx = parseInt(activeStep.getAttribute('data-step'), 10);
 
     if (stepIdx >= 0 && stepIdx <= 7) {
       const keyNum = parseInt(e.key, 10);
-      if (keyNum >= 1 && keyNum <= 6) {
+      if (keyNum >= 1 && keyNum <= 7) {
         const option = activeStep.querySelector(`.option-pill[data-index="${keyNum}"]`);
         if (option) {
           e.preventDefault();
@@ -596,6 +665,11 @@ document.addEventListener('DOMContentLoaded', () => {
     retakeQuizBtn.addEventListener('click', () => {
       sfx.playWhoosh();
       document.querySelectorAll('.option-pill').forEach(p => p.classList.remove('selected'));
+      document.querySelectorAll('.other-input-container').forEach(c => {
+        c.style.display = 'none';
+        const inp = c.querySelector('.other-text-input');
+        if (inp) inp.value = '';
+      });
       for (const k in quizState.answers) quizState.answers[k] = '';
       if (waitlistForm) waitlistForm.reset();
       goToStep(0);

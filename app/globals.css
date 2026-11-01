@@ -1528,6 +1528,93 @@ body {
   color: #FFF !important;
 }
 
+/* Other Option Custom Text Input Container */
+.other-input-container {
+  margin-top: 14px;
+  width: 100%;
+  animation: otherFadeSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes otherFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.other-input-inner {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+}
+
+.other-text-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 13px 16px;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 500;
+  outline: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.other-text-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.other-text-input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #E27D60;
+  box-shadow: 0 0 0 3px rgba(226, 125, 96, 0.35);
+}
+
+.other-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #E27D60;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 20px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(226, 125, 96, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.other-submit-btn:hover:not(:disabled) {
+  background: #d46f53;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(226, 125, 96, 0.45);
+}
+
+.other-submit-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.other-submit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 /* Personality Hologram Card */
 .hologram-personality-card {
   background: rgba(255, 255, 255, 0.14);
