@@ -1774,6 +1774,82 @@ body {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
+/* Thank You Screen Compact Action Buttons */
+.quiz-thankyou-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.quiz-btn-retake {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #E27D60;
+  color: #FFFFFF;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  padding: 8px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(226, 125, 96, 0.32);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+}
+
+.quiz-btn-retake:hover {
+  background: #d46f53;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(226, 125, 96, 0.45);
+}
+
+.quiz-btn-retake:active {
+  transform: translateY(0);
+}
+
+.quiz-btn-retake svg {
+  transition: transform 0.2s ease;
+}
+
+.quiz-btn-retake:hover svg {
+  transform: translateX(3px);
+}
+
+.quiz-btn-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.9);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quiz-btn-close:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #FFFFFF;
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.quiz-btn-close:active {
+  transform: translateY(0);
+}
+
 /* Footer - Original Luxury Dark Espresso Theme */
 .site-footer {
   background: #0D0704;

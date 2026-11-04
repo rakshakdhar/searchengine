@@ -401,30 +401,28 @@ export default function HomePage() {
               <CheckCircle size={32} color="#2ECC71" />
             </div>
 
-            <h2 className="step-question" style={{ fontSize: 'clamp(1.4rem, 4.5vw, 1.9rem)', margin: '0 0 10px', color: '#FFF' }}>
-              Thank You for Attempting the Quiz{formData.name ? `, ${formData.name.split(' ')[0]}` : ''}!
+            <h2 className="step-question" style={{ fontSize: 'clamp(1.3rem, 4vw, 1.75rem)', margin: '0 0 12px', color: '#FFF', lineHeight: 1.3 }}>
+              Thank you. You are officially part of the movement{formData.name ? `, ${formData.name.split(' ')[0]}` : ''}!
             </h2>
 
-            <p style={{ fontSize: '0.95rem', color: 'rgba(255, 255, 255, 0.9)', maxWidth: '440px', margin: '0 auto 20px', lineHeight: 1.55 }}>
-              Your response has been successfully recorded. 1 nutritious meal has been reserved for a child in need on your behalf.
+            <p style={{ fontSize: '0.94rem', color: 'rgba(255, 255, 255, 0.92)', maxWidth: '440px', margin: '0 auto 20px', lineHeight: 1.6 }}>
+              To say thank you for sharing your voice, we have covered 1 day of education for a child in need on your behalf.
             </p>
 
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <div className="quiz-thankyou-actions">
               <button
                 type="button"
                 onClick={handleRetake}
-                className="btn-hero-primary"
-                style={{ margin: 0, display: 'inline-flex' }}
+                className="quiz-btn-retake"
               >
                 <span>Retake Quiz</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={14} />
               </button>
               {isModal && (
                 <button
                   type="button"
                   onClick={() => setIsQuizModalOpen(false)}
-                  className="btn-hero-secondary"
-                  style={{ margin: 0, display: 'inline-flex', padding: '12px 22px' }}
+                  className="quiz-btn-close"
                 >
                   <span>Close Window</span>
                 </button>
