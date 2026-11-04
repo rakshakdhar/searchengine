@@ -567,6 +567,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const nameInput = document.getElementById('userName');
       const emailInput = document.getElementById('userEmail');
       const phoneInput = document.getElementById('userPhone');
+      if (phoneInput && !phoneInput.dataset.strictBound) {
+        phoneInput.dataset.strictBound = 'true';
+        phoneInput.addEventListener('input', (e) => {
+          e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+      }
 
       let hasError = false;
 
@@ -589,7 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Phone Validation
       const digits = phoneInput.value.replace(/\D/g, '');
-      if (digits.length < 10) {
+      if (digits.length !== 10) {
         phoneInput.closest('.form-row').classList.add('has-error');
         hasError = true;
       } else {

@@ -14,6 +14,14 @@ export async function POST(request) {
       );
     }
 
+    const cleanPhone = String(phone || '').replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      return NextResponse.json(
+        { error: 'Mobile number must be strictly 10 digits.' },
+        { status: 400 }
+      );
+    }
+
     // Compute personality archetype
     const archetype = calculateArchetype(answers || {});
     const queueNumInt = Math.floor(3843 + Math.random() * 20);
@@ -23,7 +31,7 @@ export async function POST(request) {
     const submission = await saveQuizSubmission({
       name,
       email,
-      phone,
+      phone: cleanPhone,
       answers: answers || {},
       archetype,
       queueNumber,

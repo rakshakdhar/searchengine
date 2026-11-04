@@ -20,6 +20,7 @@ export default function HomePage() {
   // 0-5: MCQ Questions (1 to 6), 6: Contact Details (Question 7), 7: Thank You Screen
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [phoneError, setPhoneError] = useState('');
   const [answers, setAnswers] = useState({});
   const [computedArchetype, setComputedArchetype] = useState(null);
   const [assignedPassId, setAssignedPassId] = useState('HBL-VIP-8821');
@@ -161,8 +162,14 @@ export default function HomePage() {
   // Contact Form Submit -> Save to MongoDB & Show Thank You
   const handleContactSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim()) return;
+    const cleanPhone = (formData.phone || '').replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      setPhoneError('Please enter strictly a 10-digit mobile number');
+      return;
+    }
+    if (!formData.name.trim() || !formData.email.trim()) return;
 
+    setPhoneError('');
     setIsSubmitting(true);
     const archetype = calculateArchetype(answers);
     setComputedArchetype(archetype);
@@ -176,7 +183,7 @@ export default function HomePage() {
         body: JSON.stringify({
           name: formData.name.trim(),
           email: formData.email.trim(),
-          phone: formData.phone.trim(),
+          phone: cleanPhone,
           answers: answers
         })
       });
@@ -197,6 +204,7 @@ export default function HomePage() {
   const handleRetake = () => {
     setAnswers({});
     setFormData({ name: '', email: '', phone: '' });
+    setPhoneError('');
     setOtherTexts({});
     setOtherActiveQuestions({});
     setCurrentStep(0);
@@ -362,18 +370,41 @@ export default function HomePage() {
               </div>
 
               <div className="form-row">
-                <label className="field-label">Mobile Number *</label>
+                <label className="field-label">Mobile Number (Strictly 10 Digits) *</label>
                 <div className="input-container">
                   <Phone size={16} className="input-icon" />
                   <input
                     type="tel"
                     required
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    maxLength={10}
                     placeholder="e.g. 9876543210"
-                    className="input-field"
+                    className={`input-field ${phoneError ? 'input-error' : ''}`}
                     value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    onChange={(e) => {
+                      const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setFormData({ ...formData, phone: digitsOnly });
+                      if (digitsOnly.length === 10) {
+                        setPhoneError('');
+                      } else if (digitsOnly.length > 0 && digitsOnly.length < 10) {
+                        setPhoneError(`Must be strictly 10 digits (${digitsOnly.length}/10)`);
+                      } else {
+                        setPhoneError('');
+                      }
+                    }}
+                    onBlur={() => {
+                      if (formData.phone && formData.phone.length !== 10) {
+                        setPhoneError('Please enter strictly a 10-digit mobile number');
+                      } else {
+                        setPhoneError('');
+                      }
+                    }}
                   />
                 </div>
+                {phoneError && (
+                  <div className="field-error-msg">{phoneError}</div>
+                )}
               </div>
 
               <button type="submit" disabled={isSubmitting} className="submit-waitlist-btn">

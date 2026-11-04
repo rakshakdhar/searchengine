@@ -697,12 +697,12 @@
                 </div>
 
                 <div class="form-row">
-                  <label for="userPhone" class="field-label">Phone number <span class="req-star">*</span></label>
+                  <label for="userPhone" class="field-label">Mobile number (Strictly 10 Digits) <span class="req-star">*</span></label>
                   <div class="input-container">
                     <span class="input-icon">📱</span>
-                    <input type="tel" id="userPhone" name="userPhone" class="input-field" placeholder="e.g. 9876543210" required autocomplete="tel">
+                    <input type="tel" id="userPhone" name="userPhone" class="input-field" placeholder="10-digit mobile number" required autocomplete="tel" pattern="[0-9]{10}" maxlength="10" inputmode="numeric">
                   </div>
-                  <span class="error-text" id="phoneError">Please enter your 10-digit mobile number</span>
+                  <span class="error-text" id="phoneError">Please enter strictly a 10-digit mobile number</span>
                 </div>
 
                 <div class="waitlist-perks-box">

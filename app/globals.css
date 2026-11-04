@@ -1733,6 +1733,23 @@ body {
   border-color: #FFFFFF;
 }
 
+.input-field.input-error {
+  border-color: #FF6B6B !important;
+  background: rgba(255, 107, 107, 0.08) !important;
+  box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25) !important;
+}
+
+.field-error-msg {
+  color: #FF8E8E;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-align: left;
+}
+
 .submit-waitlist-btn {
   background: #FFFFFF;
   color: #120A06;
