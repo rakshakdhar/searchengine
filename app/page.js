@@ -437,7 +437,7 @@ export default function HomePage() {
             </h2>
 
             <p style={{ fontSize: '0.94rem', color: 'rgba(255, 255, 255, 0.92)', maxWidth: '440px', margin: '0 auto 20px', lineHeight: 1.6 }}>
-              To say thank you for sharing your voice, we have covered 1 day of education for a child in need on your behalf.
+              To say thank you for sharing your voice, we have covered one day of education for a child in need on your behalf.
             </p>
 
             <div className="quiz-thankyou-actions">
