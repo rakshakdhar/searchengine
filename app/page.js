@@ -447,7 +447,7 @@ export default function HomePage() {
                 className="quiz-btn-retake"
               >
                 <span>Retake Quiz</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={12} />
               </button>
               {isModal && (
                 <button
