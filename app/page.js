@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 export default function HomePage() {
-  // 0-5: MCQ Questions (1 to 6), 6: Contact Details (Question 7), 7: Thank You Screen
+  // 0-8: MCQ Questions (1 to 9), 9: Contact Details (Question 10), 10: Thank You Screen
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [phoneError, setPhoneError] = useState('');
@@ -118,7 +118,7 @@ export default function HomePage() {
     }
   };
 
-  // MCQ Option Select (Questions 1 to 8)
+  // MCQ Option Select (Questions 1 to 9)
   const handleSelectOption = (questionId, value, isOther = false) => {
     playSound('pop');
 
@@ -257,7 +257,7 @@ export default function HomePage() {
 
       {/* Steps Viewport */}
       <div className="steps-viewport">
-        {/* STEPS 0 to 7: Clean MCQ Questions (Questions 1 to 8) */}
+        {/* STEPS 0 to 8: Clean MCQ Questions (Questions 1 to 9) */}
         {currentStep >= 0 && currentStep < QUIZ_QUESTIONS.length && (() => {
           const currentQ = QUIZ_QUESTIONS[currentStep];
           const currentAnswer = answers[currentQ.id] || '';
@@ -331,7 +331,7 @@ export default function HomePage() {
           );
         })()}
 
-        {/* Final Step: Contact Details (Question 8: Secure Your Founding Spot) */}
+        {/* Final Step: Contact Details (Question 10: Secure Your Founding Spot) */}
         {currentStep === QUIZ_QUESTIONS.length && (
           <div>
             <h2 className="step-question" style={{ marginBottom: '18px' }}>
@@ -654,7 +654,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Main Interactive Archetype Quiz Flow (8 Questions) */}
+      {/* Main Interactive Archetype Quiz Flow (9 Questions) */}
       {/* Main Interactive Archetype Quiz Flow */}
       <section id="quiz" className="quiz-section">
         <div className="quiz-container">
